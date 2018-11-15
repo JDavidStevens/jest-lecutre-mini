@@ -1,4 +1,4 @@
-const {} = require('../Logic/logic');
+const { toggle, addToCart, calculateSubTotal } = require('../Logic/logic');
 
 const product = {
   id: 1,
@@ -7,12 +7,72 @@ const product = {
   image: 'http://goodtogostore.com/product-package-images/192837494.jpg',
 };
 
-describe('Tests Toggle Show button', () => {});
+describe('Tests Toggle Show button', () => {
+  test('if given true, return false', ()=>{
+    expect(toggle(true)).toBe(false)
+  })
+  
+  test('if given false, return true', ()=>{
+    expect(toggle(false)).toBe(true)
+  })
+  
+  test('if given falsey value, return true', ()=>{
+    expect(toggle(0)).toBeTruthy();
+  })
 
-describe('Can add item to cart', () => {});
+
+});
+
+
+
+describe('Can add item to cart', () => {
+  var cart = [];
+  beforeEach(()=>{
+    cart = [];
+  })
+
+  test('can add item to cart',()=>{
+    expect(addToCart(cart,product)).toHaveLength(1);
+  })
+
+  test('that the returned array has the correct item',()=>{
+    let newCart = addToCart(cart, product)
+    expect(newCart[0].id).toEqual(product.id)
+  })
+
+  test('should return a new cart',()=>{
+    let newCart = addToCart(cart, product)
+    expect(newCart).not.toBe(cart)
+  })
+
+  test('when adding a repeat item should up qty',()=>{
+    let newCart = addToCart(cart, product)
+    newCart= addToCart(newCart,product);
+    expect(newCart[0].qty).toBe(2)
+  })
+
+  test('added item should not be the same object',()=>{
+    let newCart = addToCart(cart, product)
+    expect(newCart[0]).not.toBe(product)
+  })
+
+  test('if adding a duplicate item, should not be the same object',()=>{
+    let newCart = addToCart(cart, product)
+    let reallyNewCart= addToCart(newCart,product);
+    expect(newCart[0].qty).toBe(1);
+  })
+  
+});
 
 describe('can calculate sub total', () => {
+
+  
+
   // can get correct sub total
+  test('can get correct sub total', ()=>{
+    expect(calculateSubTotal(newCart)).toEqual(subTotal)
+  })
+  
   // has 2 decimal points at the end
   // does not go past 2 decimal palces
   // returns a string(because numbers can't be 1.00 it has to be a string to keep the two deciamals)
